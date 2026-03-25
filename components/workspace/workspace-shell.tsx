@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { MessageComposer } from "@/components/workspace/message-composer";
 import { MessageList } from "@/components/workspace/message-list";
 import { ReportPanel } from "@/components/workspace/report-panel";
@@ -207,10 +208,10 @@ export function WorkspaceShell({
         <section className="grid min-h-0 gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
           <div className="flex min-h-[80vh] min-w-0 flex-col gap-4 xl:min-h-0">
             {error ? (
-              <div className="border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive shadow-sm">
-                <p className="text-[11px] uppercase tracking-[0.24em]">请求失败</p>
-                <p className="mt-2 leading-6">{error}</p>
-              </div>
+              <Alert variant="destructive">
+                <AlertTitle>请求失败</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             ) : null}
             <div className="flex min-h-0 flex-1 flex-col overflow-hidden border border-border bg-muted/20 p-3 sm:p-4">
               <MessageList messages={messages} isSending={isSending} />

@@ -1,6 +1,14 @@
 import type { ChangeEvent } from "react";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import type { UploadRecord } from "@/lib/domain/types";
 
 function formatSize(size: number) {
@@ -32,13 +40,13 @@ export function UploadList({
   }
 
   return (
-    <section className="space-y-4 border border-border bg-card p-4 shadow-sm">
-      <div className="flex flex-wrap items-center justify-between gap-4">
+    <Card>
+      <CardHeader className="flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
-          <h2 className="text-sm font-semibold">上传文件</h2>
-          <p className="text-xs text-muted-foreground">
+          <CardTitle className="text-sm font-semibold">上传文件</CardTitle>
+          <CardDescription>
             支持 CSV、Excel、TXT 与 Markdown，单文件限制 10MB。
-          </p>
+          </CardDescription>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-muted-foreground">{uploads.length} 个文件</span>
@@ -55,52 +63,62 @@ export function UploadList({
             </label>
           </Button>
         </div>
-      </div>
+      </CardHeader>
 
-      {uploads.length === 0 ? (
-        <div className="space-y-3 border border-dashed border-border px-4 py-6 text-sm text-muted-foreground">
-          <p className="font-medium text-foreground">先补充一份上下文资料</p>
-          <p className="leading-6">
-            上传数据、日志、说明文档或 Markdown 备注后，当前会话会立即获得更多分析依据。
-          </p>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {uploads.map((upload) => (
-            <article key={upload.id} className="border border-border bg-background p-3">
-              <div className="flex flex-wrap items-start justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">{upload.fileName}</p>
-                  <div className="mt-2 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
-                    <span className="border border-border px-2 py-1">{upload.kind}</span>
-                    <span>{formatSize(upload.size)}</span>
+      <CardContent>
+        {uploads.length === 0 ? (
+          <Card className="border-dashed">
+            <CardContent className="space-y-3 py-6">
+              <p className="font-medium text-foreground">先补充一份上下文资料</p>
+              <p className="leading-6 text-muted-foreground">
+                上传数据、日志、说明文档或 Markdown 备注后，当前会话会立即获得更多分析依据。
+              </p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-3">
+            {uploads.map((upload) => (
+              <Card key={upload.id} size="sm">
+                <CardContent className="space-y-2">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{upload.fileName}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <Badge variant="outline" className="text-[11px] uppercase tracking-[0.18em]">
+                          {upload.kind}
+                        </Badge>
+                        <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                          {formatSize(upload.size)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <p className="mt-3 text-sm leading-6 text-muted-foreground">{upload.summary}</p>
-              {upload.schemaPreview.length > 0 ? (
-                <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                  {upload.schemaPreview.map((field) => (
-                    <span key={field} className="border border-border bg-card px-2 py-1">
-                      {field}
-                    </span>
-                  ))}
-                </div>
-              ) : null}
-            </article>
-          ))}
-        </div>
-      )}
-
-      {isUploading ? (
-        <div className="border border-border bg-background p-3">
-          <div className="space-y-2">
-            <div className="h-3 w-24 animate-pulse bg-muted" />
-            <div className="h-3 w-full animate-pulse bg-muted" />
-            <div className="h-3 w-2/3 animate-pulse bg-muted" />
+                  <p className="text-sm leading-6 text-muted-foreground">{upload.summary}</p>
+                  {upload.schemaPreview.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                      {upload.schemaPreview.map((field) => (
+                        <Badge key={field} variant="outline" className="text-xs">
+                          {field}
+                        </Badge>
+                      ))}
+                    </div>
+                  ) : null}
+                </CardContent>
+              </Card>
+            ))}
           </div>
-        </div>
-      ) : null}
-    </section>
+        )}
+
+        {isUploading ? (
+          <Card className="mt-3">
+            <CardContent className="space-y-2 py-3">
+              <div className="h-3 w-24 animate-pulse bg-muted" />
+              <div className="h-3 w-full animate-pulse bg-muted" />
+              <div className="h-3 w-2/3 animate-pulse bg-muted" />
+            </CardContent>
+          </Card>
+        ) : null}
+      </CardContent>
+    </Card>
   );
 }

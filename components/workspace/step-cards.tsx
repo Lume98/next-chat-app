@@ -1,3 +1,10 @@
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
+
 const steps = [
   {
     label: "1. 先发起对话",
@@ -17,14 +24,16 @@ export function StepCards() {
   return (
     <div className="grid gap-3 sm:grid-cols-3">
       {steps.map((step) => (
-        <div key={step.label} className="border border-border bg-background px-4 py-4">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            {step.label}
-          </p>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+        <Card key={step.label} size="sm">
+          <CardHeader className="pb-2">
+            <CardDescription className="text-[11px] uppercase tracking-[0.22em]">
+              {step.label}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-sm leading-6 text-muted-foreground">
             {step.description}
-          </p>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   );

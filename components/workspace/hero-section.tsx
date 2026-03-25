@@ -1,6 +1,14 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { StepCards } from "@/components/workspace/step-cards";
 
 interface HeroSectionProps {
@@ -9,14 +17,18 @@ interface HeroSectionProps {
   onCreateSession: () => void;
 }
 
-export function HeroSection({ isCreating, error, onCreateSession }: HeroSectionProps) {
+export function HeroSection({
+  isCreating,
+  error,
+  onCreateSession,
+}: HeroSectionProps) {
   return (
-    <section className="grid gap-6 border border-border bg-card p-6 md:grid-cols-[1.4fr_0.9fr] md:p-8">
-      <div className="space-y-6">
+    <Card className="md:grid md:grid-cols-[1.4fr_0.9fr] md:gap-0 md:p-0">
+      <div className="space-y-6 p-6 md:p-8">
         <div className="space-y-3">
-          <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
+          <Badge variant="outline" className="text-xs uppercase tracking-[0.3em]">
             AI Multi-Agent MVP
-          </p>
+          </Badge>
           <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
             用一个工作区串起对话分析、文件理解与报表生成。
           </h1>
@@ -44,26 +56,30 @@ export function HeroSection({ isCreating, error, onCreateSession }: HeroSectionP
         <StepCards />
       </div>
 
-      <div className="space-y-4 border border-border bg-muted/30 p-5">
-        <div className="space-y-2">
-          <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
+      <Card className="rounded-none border-l bg-muted/30">
+        <CardHeader>
+          <CardTitle className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
             MVP Scope
-          </p>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
           <ul className="space-y-2 text-sm leading-6 text-muted-foreground">
             <li>· 对话 Agent 负责追问、总结与上下文建议</li>
             <li>· 报表 Agent 基于上传文件生成结构化中文报告</li>
             <li>· 文件先走手工上传，数据和消息本地持久化</li>
           </ul>
-        </div>
-        <div className="border border-border bg-background px-4 py-4">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            当前状态
-          </p>
-          <p className="mt-2 text-sm leading-6 text-muted-foreground">
-            已支持最近会话恢复、消息追问、文件上传和报表生成的完整闭环。
-          </p>
-        </div>
-      </div>
-    </section>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardDescription className="text-[11px] uppercase tracking-[0.22em]">
+                当前状态
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-sm leading-6 text-muted-foreground">
+              已支持最近会话恢复、消息追问、文件上传和报表生成的完整闭环。
+            </CardContent>
+          </Card>
+        </CardContent>
+      </Card>
+    </Card>
   );
 }
