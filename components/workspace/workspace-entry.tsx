@@ -42,18 +42,22 @@ export function WorkspaceEntry({ sessions }: { sessions: SessionRecord[] }) {
   }
 
   return (
-    <main className="min-h-screen bg-background px-6 py-10 text-foreground md:px-8 md:py-12">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8">
-        <HeroSection
-          isCreating={isCreating}
-          error={error}
-          onCreateSession={handleCreateSession}
-        />
-        <SessionList
-          sessions={sessions}
-          isCreating={isCreating}
-          onCreateSession={handleCreateSession}
-        />
+    <main className="fixed inset-0 overflow-hidden bg-background px-6 py-10 text-foreground md:px-8 md:py-12">
+      <div className="mx-auto flex h-full min-h-0 w-full max-w-6xl flex-col gap-8">
+        <div className="shrink-0">
+          <HeroSection
+            isCreating={isCreating}
+            error={error}
+            onCreateSession={handleCreateSession}
+          />
+        </div>
+        <div className="min-h-0 flex-1 overflow-hidden">
+          <SessionList
+            sessions={sessions}
+            isCreating={isCreating}
+            onCreateSession={handleCreateSession}
+          />
+        </div>
       </div>
     </main>
   );

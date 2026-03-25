@@ -37,10 +37,10 @@ export function WorkspaceShell({
   initialReports: ReportArtifact[];
 }) {
   const [currentSession, setCurrentSession] = useState(session);
-  const [sessionList, setSessionList] = useState(sortSessions(sessions));
+  const [sessionList, setSessionList] = useState(sessions);
   const [messages, setMessages] = useState(initialMessages);
   const [uploads, setUploads] = useState(initialUploads);
-  const [reports, setReports] = useState(sortReports(initialReports));
+  const [reports, setReports] = useState(initialReports);
   const [draft, setDraft] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSending, setIsSending] = useState(false);
@@ -196,8 +196,8 @@ export function WorkspaceShell({
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-4 md:px-6 md:py-6">
-      <div className="mx-auto grid max-w-7xl gap-4 xl:min-h-[calc(100vh-3rem)] xl:grid-cols-[320px_minmax(0,1fr)]">
+    <main className="fixed inset-0 overflow-hidden bg-background p-4 md:p-6">
+      <div className="mx-auto grid h-full min-h-0 max-w-7xl gap-4 xl:grid-cols-[320px_minmax(0,1fr)]">
         <SessionSidebar
           currentSession={currentSession}
           sessions={sessionList}
@@ -206,7 +206,7 @@ export function WorkspaceShell({
         />
 
         <section className="grid min-h-0 gap-4 xl:grid-cols-[minmax(0,1fr)_340px]">
-          <div className="flex min-h-[80vh] min-w-0 flex-col gap-4 xl:min-h-0">
+          <div className="flex min-h-0 min-w-0 flex-col gap-4">
             {error ? (
               <Alert variant="destructive">
                 <AlertTitle>请求失败</AlertTitle>
@@ -226,7 +226,7 @@ export function WorkspaceShell({
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-col gap-4 xl:overflow-y-auto xl:pr-1">
+          <div className="flex min-h-0 flex-col gap-4 overflow-y-auto pr-1">
             <UploadList
               uploads={uploads}
               onUpload={uploadFile}

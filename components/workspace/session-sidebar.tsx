@@ -38,7 +38,7 @@ export function SessionSidebar({
   reports: ReportArtifact[];
 }) {
   return (
-    <aside className="flex h-full flex-col gap-6 border border-sidebar-border bg-sidebar p-4 text-sidebar-foreground xl:min-h-[calc(100vh-3rem)]">
+    <aside className="flex h-full min-h-0 flex-col gap-6 overflow-y-auto border border-sidebar-border bg-sidebar p-4 text-sidebar-foreground">
       <div className="space-y-4">
         <div className="space-y-2">
           <Badge variant="outline" className="text-xs uppercase tracking-[0.28em] text-muted-foreground">

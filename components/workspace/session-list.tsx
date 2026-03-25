@@ -24,7 +24,7 @@ export function SessionList({
   onCreateSession,
 }: SessionListProps) {
   return (
-    <Card>
+    <Card className="flex h-full min-h-0 flex-col overflow-hidden">
       <CardHeader className="flex-row items-start justify-between gap-4">
         <div>
           <CardTitle>最近会话</CardTitle>
@@ -39,9 +39,9 @@ export function SessionList({
         </CardDescription>
       </CardHeader>
 
-      <CardContent>
+      <CardContent className="min-h-0 flex-1 overflow-y-auto pr-1">
         {sessions.length === 0 ? (
-          <Card className="flex min-h-56 flex-col items-center justify-center gap-4 border-dashed text-center">
+          <Card className="flex min-h-full min-h-56 flex-col items-center justify-center gap-4 border-dashed text-center">
             <div className="space-y-2">
               <h3 className="text-base font-medium">还没有工作区</h3>
               <p className="max-w-md text-sm leading-6 text-muted-foreground">
