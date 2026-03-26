@@ -69,10 +69,10 @@ export function HeroSection({
           </div>
 
           <div className="space-y-3">
-            <h1 className="max-w-4xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-[3.8rem] lg:leading-[1.05]">
+            <h1 className="max-w-4xl text-3xl font-semibold tracking-tight sm:text-4xl lg:text-[3.2rem] lg:leading-[1.08]">
               从这里启动新的分析，或直接接回最近工作区。
             </h1>
-            <p className="max-w-3xl text-base leading-8 text-muted-foreground sm:text-lg">
+            <p className="max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
               首页现在更像真正的工作入口：保留创建动作、最近上下文和关键状态，不再用说明内容占据首屏。
             </p>
           </div>
@@ -94,10 +94,10 @@ export function HeroSection({
 
             <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
               <div className="max-w-2xl space-y-2">
-                <p className="text-lg font-medium leading-8 tracking-tight sm:text-[1.35rem]">
+                <p className="text-base font-medium leading-7 tracking-tight sm:text-xl">
                   新建一个工作区，马上开始对话、上传资料和生成报表。
                 </p>
-                <p className="text-sm leading-7 text-muted-foreground sm:text-base">
+                <p className="text-sm leading-6 text-muted-foreground">
                   最近会话、上传文件和报表结果会一起保留，之后回到首页就能继续当前上下文。
                 </p>
               </div>
@@ -131,7 +131,7 @@ export function HeroSection({
                 <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                   {item.label}
                 </p>
-                <p className="text-lg font-semibold tracking-tight sm:text-xl">
+                <p className="text-base font-semibold tracking-tight sm:text-lg">
                   {item.value}
                 </p>
               </CardContent>

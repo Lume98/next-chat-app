@@ -43,7 +43,7 @@ export function SessionList({
                 </Badge>
               ) : null}
             </div>
-            <CardDescription className="text-sm leading-7 sm:text-base">
+            <CardDescription className="text-sm leading-6">
               {totalSessions === 0
                 ? "创建第一个工作区后，这里会保留最近的消息、资料和报表状态。"
                 : "默认优先展示最近更新的工作区，回来就能继续当前上下文。"}
@@ -62,7 +62,7 @@ export function SessionList({
           <Card className="flex min-h-80 flex-col items-center justify-center gap-4 border-dashed bg-muted/10 text-center">
             <div className="space-y-2">
               <h3 className="text-lg font-medium sm:text-xl">还没有最近工作区</h3>
-              <p className="max-w-md text-sm leading-7 text-muted-foreground sm:text-base">
+              <p className="max-w-md text-sm leading-6 text-muted-foreground">
                 先创建一个会话，再开始对话、上传文件和生成报表；之后首页会自动保留最近上下文。
               </p>
             </div>
@@ -86,7 +86,7 @@ export function SessionList({
                         <CardDescription className="text-[11px] uppercase tracking-[0.22em]">
                           Resume Launcher
                         </CardDescription>
-                        <CardTitle className="text-3xl leading-tight tracking-tight transition-transform duration-200 group-hover:translate-x-0.5 sm:text-4xl lg:text-[2.75rem]">
+                        <CardTitle className="text-2xl leading-tight tracking-tight transition-transform duration-200 group-hover:translate-x-0.5 sm:text-3xl lg:text-[2.25rem]">
                           {featuredSession.title}
                         </CardTitle>
                       </div>
@@ -94,7 +94,7 @@ export function SessionList({
                         继续工作区
                       </span>
                     </div>
-                    <p className="max-w-2xl text-base leading-8 text-muted-foreground sm:text-lg">
+                    <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
                       直接恢复最近消息、上传资料与报表上下文，回到上一次分析停下来的位置。
                     </p>
                     <div className="flex flex-wrap items-center gap-2">
@@ -118,7 +118,7 @@ export function SessionList({
                         <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                           更新时间
                         </p>
-                        <p className="text-base font-medium leading-7 sm:text-lg">
+                        <p className="text-sm font-medium leading-6 sm:text-base">
                           {formatTimestamp(featuredSession.updatedAt)}
                         </p>
                       </div>
@@ -126,7 +126,7 @@ export function SessionList({
                         <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                           当前 Agent
                         </p>
-                        <p className="text-base font-medium leading-7 sm:text-lg">
+                        <p className="text-sm font-medium leading-6 sm:text-base">
                           {getAgentLabel(featuredSession.lastActiveAgent)}
                         </p>
                       </div>
@@ -134,7 +134,7 @@ export function SessionList({
                         <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                           报表状态
                         </p>
-                        <p className="text-base font-medium leading-7 sm:text-lg">
+                        <p className="text-sm font-medium leading-6 sm:text-base">
                           {featuredSession.latestReportId ? "已有报表" : "待生成报表"}
                         </p>
                       </div>
@@ -145,7 +145,7 @@ export function SessionList({
                         <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                           快速进入
                         </p>
-                        <p className="text-base font-medium leading-7 sm:text-lg">
+                        <p className="text-sm font-medium leading-6 sm:text-base">
                           打开这个工作区，继续当前上下文。
                         </p>
                       </div>

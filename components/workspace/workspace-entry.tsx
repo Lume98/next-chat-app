@@ -84,7 +84,7 @@ export function WorkspaceEntry({
                   <p className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
                     Status Rail
                   </p>
-                  <CardTitle className="text-lg leading-7 sm:text-xl">
+                  <CardTitle className="text-base leading-6 sm:text-lg">
                     首页现在更像工作区启动台。
                   </CardTitle>
                 </div>
@@ -96,7 +96,7 @@ export function WorkspaceEntry({
                 </Badge>
               </div>
             </CardHeader>
-            <CardContent className="space-y-4 py-4 text-sm leading-7 text-muted-foreground sm:text-base">
+            <CardContent className="space-y-4 py-4 text-sm leading-6 text-muted-foreground">
               <p>首页只保留两条主路径：新建工作区，或继续最近一次活跃上下文。</p>
               <div className="space-y-2">
                 <div className="flex items-center justify-between gap-3 border border-border/70 bg-muted/20 px-3 py-3 text-foreground">
@@ -104,7 +104,7 @@ export function WorkspaceEntry({
                     <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                       主路径一
                     </p>
-                    <p className="text-sm font-medium leading-6 sm:text-[15px]">
+                    <p className="text-sm font-medium leading-5">
                       新建工作区
                     </p>
                   </div>
@@ -117,7 +117,7 @@ export function WorkspaceEntry({
                     <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                       主路径二
                     </p>
-                    <p className="text-sm font-medium leading-6 sm:text-[15px]">
+                    <p className="text-sm font-medium leading-5">
                       继续最近工作区
                     </p>
                   </div>
@@ -137,7 +137,7 @@ export function WorkspaceEntry({
                   <p className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
                     最近状态
                   </p>
-                  <CardTitle className="text-lg leading-7 sm:text-xl">
+                  <CardTitle className="text-base leading-6 sm:text-lg">
                     {latestSession ? latestSession.title : "还没有最近工作区"}
                   </CardTitle>
                 </div>
@@ -151,14 +151,14 @@ export function WorkspaceEntry({
                 ) : null}
               </div>
             </CardHeader>
-            <CardContent className="space-y-3 py-4 text-sm leading-7 text-muted-foreground sm:text-base">
+              <CardContent className="space-y-3 py-4 text-sm leading-6 text-muted-foreground">
               {latestSession ? (
                 <>
                   <div className="border border-border/70 bg-background/90 px-3 py-3 text-foreground">
                     <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                       最近恢复入口
                     </p>
-                    <p className="mt-1 text-base font-medium leading-7">
+                    <p className="mt-1 text-sm font-medium leading-6">
                       这是当前默认优先恢复的工作区。
                     </p>
                   </div>
