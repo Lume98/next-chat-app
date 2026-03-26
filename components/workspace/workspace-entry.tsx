@@ -3,11 +3,17 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import type { SessionRecord } from "@/lib/domain/types";
 import { HeroSection } from "@/components/workspace/hero-section";
 import { SessionList } from "@/components/workspace/session-list";
+import type { SessionRecord } from "@/lib/domain/types";
 
-export function WorkspaceEntry({ sessions }: { sessions: SessionRecord[] }) {
+export function WorkspaceEntry({
+  sessions,
+  totalSessions,
+}: {
+  sessions: SessionRecord[];
+  totalSessions: number;
+}) {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -41,23 +47,27 @@ export function WorkspaceEntry({ sessions }: { sessions: SessionRecord[] }) {
     }
   }
 
+  const sessionsWithReports = sessions.filter((session) => session.latestReportId)
+    .length;
+  const latestSessionUpdatedAt = sessions[0]?.updatedAt ?? null;
+
   return (
-    <main className="fixed inset-0 overflow-hidden bg-background px-6 py-10 text-foreground md:px-8 md:py-12">
-      <div className="mx-auto flex h-full min-h-0 w-full max-w-6xl flex-col gap-8">
-        <div className="shrink-0">
-          <HeroSection
-            isCreating={isCreating}
-            error={error}
-            onCreateSession={handleCreateSession}
-          />
-        </div>
-        <div className="min-h-0 flex-1 overflow-hidden">
-          <SessionList
-            sessions={sessions}
-            isCreating={isCreating}
-            onCreateSession={handleCreateSession}
-          />
-        </div>
+    <main className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-6 sm:py-8 md:px-8 md:py-10">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,1.24fr)_400px] xl:items-start xl:gap-5">
+        <HeroSection
+          isCreating={isCreating}
+          error={error}
+          onCreateSession={handleCreateSession}
+          totalSessions={totalSessions}
+          sessionsWithReports={sessionsWithReports}
+          latestSessionUpdatedAt={latestSessionUpdatedAt}
+        />
+        <SessionList
+          sessions={sessions}
+          totalSessions={totalSessions}
+          isCreating={isCreating}
+          onCreateSession={handleCreateSession}
+        />
       </div>
     </main>
   );

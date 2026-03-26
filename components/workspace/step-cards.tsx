@@ -3,35 +3,46 @@ import {
   CardContent,
   CardDescription,
   CardHeader,
+  CardTitle,
 } from "@/components/ui/card";
 
 const steps = [
   {
-    label: "1. 先发起对话",
-    description: "用自然语言描述目标、问题或你希望完成的分析任务。",
+    index: "01",
+    title: "创建工作区",
+    description: "先开一个会话，明确这次要解决的问题或分析目标。",
   },
   {
-    label: "2. 再补充资料",
+    index: "02",
+    title: "补充资料",
     description: "上传 CSV、Excel、TXT 或 Markdown，让上下文更完整。",
   },
   {
-    label: "3. 生成报表",
-    description: "报表 Agent 会基于当前资料输出结构化中文结论。",
+    index: "03",
+    title: "生成报表",
+    description: "让报表 Agent 基于当前资料输出结构化中文结论。",
   },
 ];
 
 export function StepCards() {
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className="grid gap-2 md:grid-cols-3">
       {steps.map((step) => (
-        <Card key={step.label} size="sm">
-          <CardHeader className="pb-2">
-            <CardDescription className="text-[11px] uppercase tracking-[0.22em]">
-              {step.label}
-            </CardDescription>
+        <Card key={step.index} size="sm" className="bg-background/90">
+          <CardHeader className="gap-4 pb-1">
+            <div className="flex items-center gap-3">
+              <span className="inline-flex min-w-10 items-center justify-center border border-border/80 bg-muted/30 px-2 py-1 text-[11px] font-medium tracking-[0.24em]">
+                {step.index}
+              </span>
+              <CardDescription className="text-[11px] uppercase tracking-[0.22em]">
+                Step
+              </CardDescription>
+            </div>
+            <CardTitle className="tracking-tight">{step.title}</CardTitle>
           </CardHeader>
-          <CardContent className="text-sm leading-6 text-muted-foreground">
-            {step.description}
+          <CardContent className="space-y-4 pt-0 text-sm leading-6 text-muted-foreground">
+            <p>{step.description}</p>
+            <div className="h-px bg-border/70" />
           </CardContent>
         </Card>
       ))}
