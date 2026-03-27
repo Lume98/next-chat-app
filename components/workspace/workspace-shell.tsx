@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { MessageComposer } from "@/components/workspace/message-composer";
+import { MessageComposer } from "@/components/chat/message-composer";
 import { MessageList } from "@/components/workspace/message-list";
 import { ReportPanel } from "@/components/workspace/report-panel";
 import { SessionSidebar } from "@/components/workspace/session-sidebar";

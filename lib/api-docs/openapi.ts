@@ -319,6 +319,64 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/sessions/{sessionId}": {
+      get: {
+        tags: ["Sessions"],
+        summary: "获取单个会话详情",
+        description: "返回指定会话及其消息列表，供 `/chat` 页内恢复和切换历史会话。",
+        parameters: [
+          {
+            name: "sessionId",
+            in: "path",
+            required: true,
+            schema: {
+              type: "string",
+            },
+            description: "会话 ID",
+          },
+        ],
+        responses: {
+          200: {
+            description: "会话详情",
+            content: {
+              "application/json": {
+                schema: {
+                  type: "object",
+                  required: ["session", "messages"],
+                  properties: {
+                    session: sessionSchema,
+                    messages: {
+                      type: "array",
+                      items: messageSchema,
+                    },
+                  },
+                },
+                example: {
+                  session: sessionExample,
+                  messages: [
+                    {
+                      ...messageExample,
+                      role: "user",
+                      content: "请总结这个季度的销售趋势。",
+                    },
+                    messageExample,
+                  ],
+                },
+              },
+            },
+          },
+          404: {
+            description: "会话不存在",
+            content: {
+              "application/json": {
+                schema: errorSchema,
+                example: { error: "会话不存在" },
+              },
+            },
+          },
+        },
+      },
+    },
     "/api/chat": {
       post: {
         tags: ["Chat"],
@@ -397,6 +455,115 @@ export const openApiDocument = {
                   emptyContent: {
                     summary: "消息为空",
                     value: { error: "消息内容不能为空" },
+                  },
+                },
+              },
+            },
+          },
+          404: {
+            description: "会话不存在",
+            content: {
+              "application/json": {
+                schema: errorSchema,
+                example: { error: "会话不存在" },
+              },
+            },
+          },
+        },
+      },
+    },
+    "/api/ai-chat": {
+      post: {
+        tags: ["Chat"],
+        summary: "通过 AI SDK UI stream 发起对话",
+        description:
+          "向指定会话发送 AI SDK 兼容的消息数组，并以 `text/event-stream` 返回助手流式回复。该接口为并行新能力，不替换现有 `/api/chat`。",
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: {
+                type: "object",
+                required: ["sessionId", "messages"],
+                properties: {
+                  sessionId: {
+                    type: "string",
+                  },
+                  messages: {
+                    type: "array",
+                    minItems: 1,
+                    items: {
+                      type: "object",
+                      required: ["id", "role", "parts"],
+                      properties: {
+                        id: {
+                          type: "string",
+                        },
+                        role: {
+                          type: "string",
+                          enum: ["system", "user", "assistant"],
+                        },
+                        parts: {
+                          type: "array",
+                          items: {
+                            type: "object",
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              examples: {
+                default: {
+                  summary: "发送 AI SDK UIMessage 数组",
+                  value: {
+                    sessionId: "sess_01hzc9x7g1w0example",
+                    messages: [
+                      {
+                        id: "msg_user_01",
+                        role: "user",
+                        parts: [
+                          {
+                            type: "text",
+                            text: "请基于当前会话资料总结下一步建议。",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+        responses: {
+          200: {
+            description: "返回 AI SDK UI message stream",
+            content: {
+              "text/event-stream": {
+                schema: {
+                  type: "string",
+                  description: "AI SDK UI message stream SSE 响应",
+                },
+                example:
+                  "data: {\"type\":\"start\"}\n\ndata: {\"type\":\"text-start\",\"id\":\"part_1\"}\n\ndata: {\"type\":\"text-delta\",\"id\":\"part_1\",\"delta\":\"你好\"}\n\ndata: [DONE]\n\n",
+              },
+            },
+          },
+          400: {
+            description: "请求参数错误",
+            content: {
+              "application/json": {
+                schema: errorSchema,
+                examples: {
+                  missingMessages: {
+                    summary: "缺少 messages",
+                    value: { error: "messages 必须是非空数组" },
+                  },
+                  invalidLastMessage: {
+                    summary: "最后一条消息不合法",
+                    value: { error: "最后一条消息必须是带文本内容的用户消息" },
                   },
                 },
               },
