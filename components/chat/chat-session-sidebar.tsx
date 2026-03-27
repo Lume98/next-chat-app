@@ -60,7 +60,7 @@ export function ChatSessionSidebar({
   onSelectSession: (session: SessionRecord) => void;
 }) {
   return (
-    <aside className="flex flex-col gap-5">
+    <aside className="flex min-h-0 flex-col gap-4 lg:h-full">
       <Card className="border-border/60 bg-sidebar text-sidebar-foreground shadow-sm">
         <CardHeader>
           <div className="flex flex-wrap items-center gap-2">
@@ -122,7 +122,7 @@ export function ChatSessionSidebar({
         </CardContent>
       </Card>
 
-      <Card className="border-border/60 shadow-sm">
+      <Card className="border-border/60 shadow-sm lg:min-h-0 lg:flex-1">
         <CardHeader className="flex-row items-center justify-between gap-4">
           <div>
             <CardTitle className="text-base font-semibold">最近会话</CardTitle>
@@ -130,7 +130,7 @@ export function ChatSessionSidebar({
           </div>
           <Badge variant="outline">{sessions.length}</Badge>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3">
+        <CardContent className="flex flex-col gap-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
           {sessions.length === 0 ? (
             <Empty>
               <EmptyHeader>

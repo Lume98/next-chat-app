@@ -61,8 +61,8 @@ export function ChatStreamList({
 
   if (messages.length === 0) {
     return (
-      <Card className="min-h-[28rem] border-dashed">
-        <CardContent className="flex h-full min-h-[28rem] items-center justify-center">
+      <Card className="h-full min-h-0 rounded-[inherit] border-0 border-dashed shadow-none">
+        <CardContent className="flex h-full min-h-[24rem] items-center justify-center">
           <Empty className="border-none p-0">
             <EmptyHeader>
               <Badge
@@ -88,7 +88,7 @@ export function ChatStreamList({
     <div
       ref={scrollContainerRef}
       onScroll={handleScroll}
-      className="h-full min-h-0 overflow-y-auto pr-1"
+      className="h-full min-h-0 overflow-y-auto px-3 py-3 sm:px-4 sm:py-4"
     >
       <div className="flex min-h-full flex-col justify-end gap-4">
         {messages.map((message) => {

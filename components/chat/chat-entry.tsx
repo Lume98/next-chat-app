@@ -1,16 +1,39 @@
 "use client";
 
+import { MessageSquareIcon } from "lucide-react";
 import { useRef, useState } from "react";
 import { DefaultChatTransport, type UIMessage } from "ai";
 import { useChat } from "@ai-sdk/react";
 
+import {
+  Conversation,
+  ConversationContent,
+  ConversationEmptyState,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+import {
+  Message,
+  MessageContent,
+  MessageResponse,
+} from "@/components/ai-elements/message";
+import {
+  PromptInput,
+  type PromptInputMessage,
+  PromptInputBody,
+  PromptInputFooter,
+  PromptInputSubmit,
+  PromptInputTextarea,
+  PromptInputTools,
+} from "@/components/ai-elements/prompt-input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ChatOverviewPanel } from "@/components/chat/chat-overview-panel";
-import { MessageComposer } from "@/components/chat/message-composer";
 import { ChatSessionSidebar } from "@/components/chat/chat-session-sidebar";
-import { ChatStreamList } from "@/components/chat/chat-stream-list";
+import { Skeleton } from "@/components/ui/skeleton";
 import type { MessageRecord, SessionRecord } from "@/lib/domain/types";
-import { messageRecordsToUIMessages } from "@/lib/chat/ui-messages";
+import {
+  extractTextFromUIMessage,
+  messageRecordsToUIMessages,
+} from "@/lib/chat/ui-messages";
 
 type CreateSessionResponse = {
   session?: SessionRecord;
@@ -128,8 +151,8 @@ export function ChatEntry({
     }
   }
 
-  async function handleSendMessage() {
-    const content = draft.trim();
+  async function handleSendMessage(nextDraft?: string) {
+    const content = (nextDraft ?? draft).trim();
 
     if (!content || isSending || isLoadingSession) {
       return;
@@ -156,6 +179,10 @@ export function ChatEntry({
     } catch (requestError) {
       setError(getErrorMessage(requestError, "发送消息失败"));
     }
+  }
+
+  async function handlePromptSubmit(message: PromptInputMessage) {
+    await handleSendMessage(message.text);
   }
 
   async function handleSelectSession(session: SessionRecord) {
@@ -202,63 +229,141 @@ export function ChatEntry({
   }
 
   return (
-    <div className="grid gap-5 xl:grid-cols-[320px_minmax(0,1fr)]">
-      <ChatSessionSidebar
-        totalSessions={totalSessions}
-        activeSessionTitle={activeSession?.title ?? null}
-        sessions={sessionList}
-        activeSessionId={activeSession?.id ?? null}
-        isLoadingSession={isLoadingSession}
-        onStartNewChat={handleStartNewChat}
-        onSelectSession={(session) => {
-          void handleSelectSession(session);
-        }}
-      />
+    <div className="grid h-full min-h-0 w-full gap-4 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)]">
+      <div className="min-h-0 lg:h-full">
+        <ChatSessionSidebar
+          totalSessions={totalSessions}
+          activeSessionTitle={activeSession?.title ?? null}
+          sessions={sessionList}
+          activeSessionId={activeSession?.id ?? null}
+          isLoadingSession={isLoadingSession}
+          onStartNewChat={handleStartNewChat}
+          onSelectSession={(session) => {
+            void handleSelectSession(session);
+          }}
+        />
+      </div>
 
       <section
         aria-labelledby="chat-workspace-title"
-        className="flex min-h-[80vh] min-w-0 flex-col gap-4"
+        className="flex min-h-0 min-w-0 flex-col gap-4 lg:h-full"
       >
         <h2 id="chat-workspace-title" className="sr-only">
           聊天工作区
         </h2>
-        <ChatOverviewPanel
-          statusLabel={
-            isLoadingSession ? "加载会话" : isSending ? "生成中" : "就绪"
-          }
-          activeSessionTitle={activeSession?.title ?? null}
-        />
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-border/70 bg-background/80 shadow-sm backdrop-blur">
+          <div className="shrink-0 border-b border-border/60 p-3 sm:p-4">
+            <ChatOverviewPanel
+              statusLabel={
+                isLoadingSession ? "加载会话" : isSending ? "生成中" : "就绪"
+              }
+              activeSessionTitle={activeSession?.title ?? null}
+            />
+          </div>
 
-        {error ? (
-          <Alert variant="destructive">
-            <AlertTitle>请求失败</AlertTitle>
-            <AlertDescription>{error}</AlertDescription>
-          </Alert>
-        ) : null}
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            {error ? (
+              <div className="shrink-0 px-3 pt-3 sm:px-4">
+                <Alert variant="destructive">
+                  <AlertTitle>请求失败</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              </div>
+            ) : null}
 
-        {isLoadingSession ? (
-          <Alert>
-            <AlertTitle>正在切换会话</AlertTitle>
-            <AlertDescription>
-              正在加载历史消息并同步当前上下文，完成后会自动替换右侧对话流。
-            </AlertDescription>
-          </Alert>
-        ) : null}
+            {isLoadingSession ? (
+              <div className="shrink-0 px-3 pt-3 sm:px-4">
+                <Alert>
+                  <AlertTitle>正在切换会话</AlertTitle>
+                  <AlertDescription>
+                    正在加载历史消息并同步当前上下文，完成后会自动替换右侧对话流。
+                  </AlertDescription>
+                </Alert>
+              </div>
+            ) : null}
 
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden border border-border bg-muted/20 p-3 sm:p-4">
-          <ChatStreamList
-            messages={messages}
-            isStreaming={isSending || isLoadingSession}
-          />
-        </div>
+            <div className="min-h-0 flex-1 overflow-hidden px-3 py-3 sm:px-4 sm:py-4">
+              <Conversation className="h-full rounded-2xl border border-border bg-muted/20">
+                <ConversationContent className="min-h-full justify-end px-4 py-4 sm:px-5 sm:py-5">
+                  {messages.length === 0 ? (
+                    <ConversationEmptyState
+                      className="min-h-[24rem]"
+                      icon={
+                        <MessageSquareIcon className="size-10 text-muted-foreground" />
+                      }
+                      title="在这里直接开始一轮流式对话"
+                      description="输入问题后会直接通过 AI SDK 流式接口返回回复。历史会话可以在左侧切换并继续。"
+                    />
+                  ) : (
+                    messages.map((message) => {
+                      const text = extractTextFromUIMessage(message);
+                      const isStreamingPlaceholder =
+                        message.role !== "user" && !text.trim();
 
-        <div className="shrink-0">
-          <MessageComposer
-            value={draft}
-            onChange={setDraft}
-            onSubmit={handleSendMessage}
-            isSending={isSending || isLoadingSession}
-          />
+                      return (
+                        <Message from={message.role} key={message.id}>
+                          <div className="px-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                            {message.role === "user" ? "你" : "对话 Agent"}
+                          </div>
+                          <MessageContent
+                            className={
+                              message.role === "user"
+                                ? "max-w-3xl"
+                                : "max-w-4xl"
+                            }
+                          >
+                            {isStreamingPlaceholder ? (
+                              <div className="flex min-w-56 flex-col gap-2 py-1">
+                                <Skeleton className="h-3 w-24" />
+                                <Skeleton className="h-3 w-52" />
+                                <Skeleton className="h-3 w-40" />
+                              </div>
+                            ) : (
+                              <MessageResponse className="text-base leading-8">
+                                {text}
+                              </MessageResponse>
+                            )}
+                          </MessageContent>
+                        </Message>
+                      );
+                    })
+                  )}
+                </ConversationContent>
+                <ConversationScrollButton />
+              </Conversation>
+            </div>
+          </div>
+
+          <div className="shrink-0 border-t border-border/60 bg-background/95 p-3 backdrop-blur sm:p-4">
+            <PromptInput
+              onSubmit={(message) => handlePromptSubmit(message)}
+              className="w-full"
+            >
+              <PromptInputBody>
+                <PromptInputTextarea
+                  value={draft}
+                  onChange={(event) => setDraft(event.currentTarget.value)}
+                  placeholder="输入你的问题、分析目标或后续追问…"
+                  className="min-h-28 text-base leading-8"
+                  disabled={isLoadingSession}
+                />
+              </PromptInputBody>
+              <PromptInputFooter className="border-t border-border/60 pt-3">
+                <p className="text-sm text-muted-foreground">
+                  {draft.trim()
+                    ? `已输入 ${draft.trim().length} 个字符`
+                    : "Enter 发送，Shift + Enter 换行"}
+                </p>
+                <PromptInputTools className="justify-end">
+                  <PromptInputSubmit
+                    status={status}
+                    onStop={stop}
+                    disabled={isLoadingSession || (!draft.trim() && !isSending)}
+                  />
+                </PromptInputTools>
+              </PromptInputFooter>
+            </PromptInput>
+          </div>
         </div>
       </section>
     </div>
