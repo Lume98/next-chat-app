@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -49,7 +49,7 @@ function SessionListItem({
   const metaId = `session-meta-${session.id}`;
 
   return (
-    <li>
+    <li className="group">
       <button
         type="button"
         onClick={() => onSelect(session)}
@@ -57,26 +57,32 @@ function SessionListItem({
         aria-current={isActive ? "page" : undefined}
         aria-describedby={metaId}
         className={cn(
-          "w-full rounded-xl border px-3 py-3 text-left touch-manipulation transition-colors",
+          "relative w-full rounded-xl border px-3 py-3 text-left touch-manipulation",
+          "transition-all duration-200 ease-out",
           "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none",
           "disabled:pointer-events-none disabled:opacity-60",
           isActive
-            ? "border-border bg-muted/35"
-            : "border-transparent bg-transparent hover:border-border/60 hover:bg-muted/20",
+            ? "border-border bg-muted/35 shadow-sm"
+            : "border-transparent bg-transparent hover:border-border/40 hover:bg-muted/15",
         )}
       >
+        {/* Active indicator */}
+        {isActive && (
+          <div className="absolute inset-y-0 left-0 w-0.5 rounded-l-xl bg-primary shadow-[0_0_8px_rgba(var(--primary-rgb),0.5)]" />
+        )}
+
         <div className="flex min-w-0 items-start justify-between gap-3">
           <p
             className={cn(
               "min-w-0 flex-1 truncate text-sm leading-6",
-              isActive ? "font-medium text-foreground" : "text-foreground/90",
+              isActive ? "font-medium text-foreground" : "text-foreground/85 group-hover:text-foreground",
             )}
           >
             {session.title}
           </p>
           <time
             dateTime={session.updatedAt}
-            className="shrink-0 pt-0.5 text-xs tabular-nums text-muted-foreground"
+            className="shrink-0 pt-0.5 text-xs tabular-nums text-muted-foreground group-hover:text-muted-foreground/80"
           >
             {formatTimestamp(session.updatedAt)}
           </time>
@@ -113,23 +119,24 @@ export function ChatSessionSidebar(props: {
       className="flex h-full min-h-0 flex-col"
       aria-labelledby="chat-session-sidebar-title"
     >
-      <Card className="flex h-full min-h-0 flex-col rounded-3xl border border-border/60 bg-background shadow-sm ring-0 lg:rounded-none lg:border-r-0 lg:shadow-none">
+      <Card className="flex h-full min-h-0 flex-col rounded-3xl border border-border/60 bg-background/60 backdrop-blur-sm shadow-sm ring-0 lg:rounded-none lg:border-r-0 lg:shadow-none">
         <CardHeader className="gap-3 border-b border-border/60 pb-4">
           <div className="flex items-center justify-between gap-3">
-            <CardTitle
+            <h2
               id="chat-session-sidebar-title"
-              className="text-sm font-medium text-foreground"
+              className="font-heading text-sm font-medium text-foreground"
             >
               会话列表
-            </CardTitle>
-            <span className="text-xs text-muted-foreground">
+            </h2>
+            <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary/80" />
               {displayTotalSessions} 条
             </span>
           </div>
           <Button
             onClick={onStartNewChat}
             disabled={isLoadingSession}
-            className="w-full"
+            className="w-full transition-all duration-200 hover:shadow-md"
           >
             新建对话
           </Button>
@@ -139,7 +146,7 @@ export function ChatSessionSidebar(props: {
           aria-busy={isLoadingSession}
           className="flex min-h-0 flex-1 flex-col py-4"
         >
-          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-muted-foreground/20 hover:scrollbar-thumb-muted-foreground/30">
             {sessions.length === 0 ? (
               <Empty className="rounded-xl border border-border/60 bg-muted/[0.14] px-5 py-8">
                 <EmptyHeader className="items-start text-left">

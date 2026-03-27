@@ -213,12 +213,16 @@ export function ChatEntry({
         聊天布局
       </h1>
 
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/45 via-transparent to-muted/12" />
+      {/* Refined decorative layers */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/[0.03] via-transparent to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background/60" />
 
-      <div className="relative grid h-full min-h-0 w-full gap-3 px-3 py-3 lg:grid-cols-[296px_minmax(0,1fr)] lg:gap-0 lg:px-0 lg:py-0 xl:grid-cols-[336px_minmax(0,1fr)]">
-        <div className="min-h-0 lg:h-full">
+      {/* Main grid with entrance animation */}
+      <div className="relative grid h-full min-h-0 w-full gap-3 px-3 py-3 lg:grid-cols-[296px_minmax(0,1fr)] lg:gap-0 lg:px-0 lg:py-0 xl:grid-cols-[336px_minmax(0,1fr)] animate-fade-in-up">
+        {/* Sidebar with subtle enhancement */}
+        <div className="min-h-0 lg:h-full relative">
+          <div className="absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-border/30 to-transparent" />
           <ChatSessionSidebar
             totalSessions={totalSessions}
             sessions={sessionList}
@@ -231,19 +235,22 @@ export function ChatEntry({
           />
         </div>
 
-        <ChatWorkspace
-          activeSession={activeSession}
-          messages={messages}
-          draft={draft}
-          status={status}
-          statusLabel={statusLabel}
-          error={error}
-          isLoadingSession={isLoadingSession}
-          isSending={isSending}
-          onDraftChange={setDraft}
-          onSubmit={handlePromptSubmit}
-          onStop={stop}
-        />
+        {/* Workspace with subtle glass effect */}
+        <div className="min-h-0 lg:h-full relative">
+          <ChatWorkspace
+            activeSession={activeSession}
+            messages={messages}
+            draft={draft}
+            status={status}
+            statusLabel={statusLabel}
+            error={error}
+            isLoadingSession={isLoadingSession}
+            isSending={isSending}
+            onDraftChange={setDraft}
+            onSubmit={handlePromptSubmit}
+            onStop={stop}
+          />
+        </div>
       </div>
     </section>
   );
