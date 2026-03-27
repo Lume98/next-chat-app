@@ -205,34 +205,46 @@ export function ChatEntry({
   }
 
   return (
-    <div className="grid h-full min-h-0 w-full gap-4 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
-      <div className="min-h-0 lg:h-full">
-        <ChatSessionSidebar
-          totalSessions={totalSessions}
-          activeSessionTitle={activeSession?.title ?? null}
-          sessions={sessionList}
-          activeSessionId={activeSession?.id ?? null}
+    <section
+      aria-labelledby="chat-shell-title"
+      className="relative h-full min-h-0 w-full overflow-hidden"
+    >
+      <h1 id="chat-shell-title" className="sr-only">
+        聊天布局
+      </h1>
+
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/45 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/45 via-transparent to-muted/12" />
+
+      <div className="relative grid h-full min-h-0 w-full gap-3 px-3 py-3 lg:grid-cols-[296px_minmax(0,1fr)] lg:gap-0 lg:px-0 lg:py-0 xl:grid-cols-[336px_minmax(0,1fr)]">
+        <div className="min-h-0 lg:h-full">
+          <ChatSessionSidebar
+            totalSessions={totalSessions}
+            sessions={sessionList}
+            activeSessionId={activeSession?.id ?? null}
+            isLoadingSession={isLoadingSession}
+            onStartNewChat={handleStartNewChat}
+            onSelectSession={(session) => {
+              void handleSelectSession(session);
+            }}
+          />
+        </div>
+
+        <ChatWorkspace
+          activeSession={activeSession}
+          messages={messages}
+          draft={draft}
+          status={status}
+          statusLabel={statusLabel}
+          error={error}
           isLoadingSession={isLoadingSession}
-          onStartNewChat={handleStartNewChat}
-          onSelectSession={(session) => {
-            void handleSelectSession(session);
-          }}
+          isSending={isSending}
+          onDraftChange={setDraft}
+          onSubmit={handlePromptSubmit}
+          onStop={stop}
         />
       </div>
-
-      <ChatWorkspace
-        activeSession={activeSession}
-        messages={messages}
-        draft={draft}
-        status={status}
-        statusLabel={statusLabel}
-        error={error}
-        isLoadingSession={isLoadingSession}
-        isSending={isSending}
-        onDraftChange={setDraft}
-        onSubmit={handlePromptSubmit}
-        onStop={stop}
-      />
-    </div>
+    </section>
   );
 }

@@ -33,7 +33,6 @@ export async function parseAiChatRequest(
   try {
     payload = (await request.json()) as AiChatRequest;
   } catch {
-    console.warn("AI chat request body is not valid JSON");
     return badRequest("请求体必须是有效 JSON");
   }
 
@@ -41,14 +40,10 @@ export async function parseAiChatRequest(
     typeof payload.sessionId === "string" ? payload.sessionId.trim() : "";
 
   if (!sessionId) {
-    console.warn("AI chat request missing sessionId");
     return badRequest("缺少 sessionId");
   }
 
   if (!isUIMessageArray(payload.messages) || payload.messages.length === 0) {
-    console.warn("AI chat request has invalid messages payload", {
-      sessionId,
-    });
     return badRequest("messages 必须是非空数组");
   }
 
