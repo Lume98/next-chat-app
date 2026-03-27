@@ -1,14 +1,7 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Empty,
   EmptyContent,
@@ -18,24 +11,25 @@ import {
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { SessionRecord } from "@/lib/domain/types";
-import { formatTimestamp, getAgentLabel } from "@/lib/utils/session";
+import { cn } from "@/lib/utils";
+import { formatTimestamp } from "@/lib/utils/session";
 
 function SessionListSkeleton() {
   return (
-    <div className="flex flex-col gap-3" aria-hidden="true">
-      {Array.from({ length: 3 }).map((_, index) => (
-        <Card key={index} size="sm" className="rounded-2xl border-border/50">
-          <CardContent className="flex flex-col gap-3 py-3">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex min-w-0 flex-1 flex-col gap-2">
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
-              </div>
-              <Skeleton className="h-5 w-16" />
+    <div className="flex flex-col gap-2" aria-hidden="true">
+      {Array.from({ length: 5 }).map((_, index) => (
+        <div
+          key={index}
+          className="rounded-2xl border border-transparent bg-muted/20 px-3 py-3"
+        >
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-3">
+              <Skeleton className="h-4 w-3/5" />
+              <Skeleton className="h-3 w-20" />
             </div>
             <Skeleton className="h-3 w-28" />
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ))}
     </div>
   );
@@ -62,51 +56,41 @@ function SessionListItem({
         disabled={disabled}
         aria-current={isActive ? "page" : undefined}
         aria-describedby={metaId}
-        className={[
-          "group flex w-full items-start gap-3 rounded-2xl border px-3 py-3 text-left touch-manipulation transition-colors",
-          "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/50 focus-visible:outline-none",
+        className={cn(
+          "w-full rounded-2xl border px-3 py-3 text-left touch-manipulation transition-colors",
+          "focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:outline-none",
           "disabled:pointer-events-none disabled:opacity-60",
           isActive
-            ? "border-primary/50 bg-primary/[0.08] text-foreground"
-            : "border-border/60 bg-background hover:border-border hover:bg-muted/45",
-        ].join(" ")}
+            ? "border-border bg-muted/40"
+            : "border-transparent bg-transparent hover:border-border/60 hover:bg-muted/25",
+        )}
       >
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
-            <p className="min-w-0 flex-1 line-clamp-2 text-sm font-medium leading-6 text-pretty">
-              {session.title}
-            </p>
-            <Badge variant="outline" className="shrink-0 text-[11px]">
-              {getAgentLabel(session.lastActiveAgent)}
-            </Badge>
-          </div>
-
-          <div
-            id={metaId}
-            className="mt-3 flex items-center justify-between gap-3 text-xs text-muted-foreground"
+        <div className="flex min-w-0 items-start justify-between gap-3">
+          <p
+            className={cn(
+              "min-w-0 flex-1 truncate text-sm leading-6",
+              isActive ? "font-medium text-foreground" : "text-foreground/90",
+            )}
           >
-            <span className="truncate">
-              {isActive ? "当前会话" : "最近更新"}
-            </span>
-            <span className="shrink-0 tabular-nums">
-              {formatTimestamp(session.updatedAt)}
-            </span>
-          </div>
+            {session.title}
+          </p>
+          <time
+            dateTime={session.updatedAt}
+            className="shrink-0 pt-0.5 text-xs tabular-nums text-muted-foreground"
+          >
+            {formatTimestamp(session.updatedAt)}
+          </time>
         </div>
+
+        <p id={metaId} className="mt-1 text-xs text-muted-foreground">
+          {isActive ? "当前会话" : "点击继续这段对话"}
+        </p>
       </button>
     </li>
   );
 }
 
-export function ChatSessionSidebar({
-  totalSessions,
-  activeSessionTitle,
-  sessions,
-  activeSessionId,
-  isLoadingSession,
-  onStartNewChat,
-  onSelectSession,
-}: {
+export function ChatSessionSidebar(props: {
   totalSessions: number;
   activeSessionTitle: string | null;
   sessions: SessionRecord[];
@@ -115,82 +99,85 @@ export function ChatSessionSidebar({
   onStartNewChat: () => void;
   onSelectSession: (session: SessionRecord) => void;
 }) {
+  const {
+    totalSessions,
+    sessions,
+    activeSessionId,
+    isLoadingSession,
+    onStartNewChat,
+    onSelectSession,
+  } = props;
+  const displayTotalSessions = Math.max(totalSessions, sessions.length);
+
   return (
     <aside
       className="flex h-full min-h-0 flex-col"
       aria-labelledby="chat-session-sidebar-title"
     >
-      <Card className="flex h-full min-h-0 flex-col rounded-3xl border-border/60 shadow-sm">
-        <CardHeader className="gap-4 border-b border-border/60 pb-4">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0 space-y-1">
-              <div className="flex items-center gap-2">
-                <CardTitle
-                  id="chat-session-sidebar-title"
-                  className="text-base font-semibold"
-                >
-                  会话列表
-                </CardTitle>
-                <Badge variant="outline" className="tabular-nums">
-                  {totalSessions}
-                </Badge>
-              </div>
-              <CardDescription className="line-clamp-2 min-w-0 text-sm text-pretty">
-                {activeSessionTitle ?? "选择一段历史对话，或从这里开始新的会话。"}
-              </CardDescription>
-            </div>
-            <div
-              aria-live="polite"
-              className="shrink-0 text-[11px] uppercase tracking-[0.2em] text-muted-foreground"
-            >
-              {isLoadingSession ? "加载中…" : "Ready"}
-            </div>
-          </div>
+      <Card className="flex h-full min-h-0 flex-col rounded-3xl border-border/60 bg-background shadow-sm">
+        <CardHeader className="border-b border-border/60 pb-4">
+          <CardTitle id="chat-session-sidebar-title" className="sr-only">
+            会话侧栏
+          </CardTitle>
 
-          <Button onClick={onStartNewChat} disabled={isLoadingSession} size="sm">
+          <Button
+            onClick={onStartNewChat}
+            disabled={isLoadingSession}
+            className="w-full rounded-2xl"
+          >
             新建对话
           </Button>
         </CardHeader>
 
         <CardContent
           aria-busy={isLoadingSession}
-          className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto py-4"
+          className="flex min-h-0 flex-1 flex-col gap-4 py-4"
         >
-          {sessions.length === 0 ? (
-            <Empty className="rounded-2xl border-border/60 bg-muted/20">
-              <EmptyHeader>
-                <EmptyTitle>还没有会话</EmptyTitle>
-                <EmptyDescription>
-                  发送第一条消息后，这里会出现最近记录。新对话会自动创建并进入流式模式。
-                </EmptyDescription>
-              </EmptyHeader>
-              <EmptyContent>
-                <Button
-                  onClick={onStartNewChat}
-                  disabled={isLoadingSession}
-                  size="sm"
-                >
-                  立即开始
-                </Button>
-              </EmptyContent>
-            </Empty>
-          ) : isLoadingSession ? (
-            <SessionListSkeleton />
-          ) : (
-            <nav aria-label="历史会话">
-              <ul className="flex flex-col gap-3">
-                {sessions.map((session) => (
-                  <SessionListItem
-                    key={session.id}
-                    session={session}
-                    isActive={session.id === activeSessionId}
+          <div className="flex items-center justify-between gap-3 px-1">
+            <h2 className="text-sm font-medium text-foreground">会话列表</h2>
+            <span className="text-xs text-muted-foreground">
+              {displayTotalSessions} 条
+            </span>
+          </div>
+
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            {sessions.length === 0 ? (
+              <Empty className="rounded-2xl border-border/60 bg-muted/[0.14] px-5 py-8">
+                <EmptyHeader className="items-start text-left">
+                  <EmptyTitle className="text-base">还没有会话</EmptyTitle>
+                  <EmptyDescription className="text-sm leading-6">
+                    发送第一条消息后，这里会显示历史会话。
+                  </EmptyDescription>
+                </EmptyHeader>
+                <EmptyContent className="items-start">
+                  <Button
+                    onClick={onStartNewChat}
                     disabled={isLoadingSession}
-                    onSelect={onSelectSession}
-                  />
-                ))}
-              </ul>
-            </nav>
-          )}
+                    size="sm"
+                    className="rounded-xl"
+                  >
+                    立即开始
+                  </Button>
+                </EmptyContent>
+              </Empty>
+            ) : isLoadingSession ? (
+              <SessionListSkeleton />
+            ) : (
+              <nav aria-label="历史会话">
+                <ul className="flex flex-col gap-2">
+                  {sessions.map((session) => (
+                    <SessionListItem
+                      key={session.id}
+                      session={session}
+                      isActive={session.id === activeSessionId}
+                      disabled={isLoadingSession}
+                      onSelect={onSelectSession}
+                    />
+                  ))}
+                </ul>
+              </nav>
+            )}
+          </div>
         </CardContent>
       </Card>
     </aside>

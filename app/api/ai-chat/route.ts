@@ -1,64 +1,68 @@
 import {
   consumeStream,
-  type UIMessage,
 } from "ai";
+import { after } from "next/server";
 
 import {
   createConversationStream,
-  extractTextFromUIMessage,
   getLatestUserMessage,
 } from "@/lib/agents/ai-sdk-chat";
+import {
+  parseAiChatRequest,
+  persistAssistantMessage,
+} from "@/lib/chat/ai-chat-route";
 import {
   addMessage,
   getSessionBundle,
   renameSessionIfUntitled,
 } from "@/lib/storage/repository";
+import { isResponse, serverError } from "@/lib/utils/http";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
-type AiChatRequest = {
-  sessionId?: unknown;
-  messages?: unknown;
-};
-
-function badRequest(message: string) {
-  return Response.json({ error: message }, { status: 400 });
-}
-
-function isUIMessageArray(value: unknown): value is UIMessage[] {
-  return Array.isArray(value);
-}
-
 export async function POST(request: Request) {
-  let payload: AiChatRequest;
+  const requestStartedAt = Date.now();
+  const parsedRequest = await parseAiChatRequest(request);
 
-  try {
-    payload = (await request.json()) as AiChatRequest;
-  } catch {
-    return badRequest("请求体必须是有效 JSON");
+  if (isResponse(parsedRequest)) {
+    console.warn("AI chat request validation failed");
+    return parsedRequest;
   }
 
-  const sessionId =
-    typeof payload.sessionId === "string" ? payload.sessionId.trim() : "";
+  const { messages, sessionId } = parsedRequest;
+  const requestId = `ai-chat:${sessionId}:${requestStartedAt}`;
+  const latestUserMessage = getLatestUserMessage(messages);
 
-  if (!sessionId) {
-    return badRequest("缺少 sessionId");
-  }
-
-  if (!isUIMessageArray(payload.messages) || payload.messages.length === 0) {
-    return badRequest("messages 必须是非空数组");
-  }
-
-  const latestUserMessage = getLatestUserMessage(payload.messages);
+  console.info("AI chat request received", {
+    requestId,
+    sessionId,
+    messageCount: messages.length,
+    latestMessageRole: messages[messages.length - 1]?.role ?? null,
+  });
 
   if (!latestUserMessage) {
-    return badRequest("最后一条消息必须是带文本内容的用户消息");
+    console.warn("AI chat request missing valid latest user message", {
+      requestId,
+      sessionId,
+      messageCount: messages.length,
+    });
+
+    return Response.json(
+      { error: "最后一条消息必须是带文本内容的用户消息" },
+      { status: 400 },
+    );
   }
 
-  const bundle = await getSessionBundle(sessionId);
+  const bundlePromise = getSessionBundle(sessionId);
+  const bundle = await bundlePromise;
 
   if (!bundle) {
+    console.warn("AI chat session not found", {
+      requestId,
+      sessionId,
+    });
+
     return Response.json({ error: "会话不存在" }, { status: 404 });
   }
 
@@ -71,43 +75,88 @@ export async function POST(request: Request) {
 
   await renameSessionIfUntitled(sessionId, latestUserMessage.content);
 
+  console.info("AI chat user message stored", {
+    requestId,
+    sessionId,
+    content: latestUserMessage.content,
+    historyMessageCount: bundle.messages.length,
+    latestUserMessageLength: latestUserMessage.content.length,
+  });
+
   let result;
 
   try {
     result = await createConversationStream({
       bundle,
-      messages: payload.messages,
+      messages,
       abortSignal: request.signal,
     });
+
+    console.info("AI chat stream initialized", {
+      requestId,
+      sessionId,
+      elapsedMs: Date.now() - requestStartedAt,
+    });
   } catch (error) {
-    return Response.json(
-      {
-        error: error instanceof Error ? error.message : "对话模型初始化失败",
-      },
-      { status: 500 },
-    );
+    console.error("AI chat stream initialization failed", {
+      requestId,
+      sessionId,
+      elapsedMs: Date.now() - requestStartedAt,
+      error,
+    });
+
+    return serverError("对话模型初始化失败", error);
   }
 
   return result.toUIMessageStreamResponse({
-    originalMessages: payload.messages,
+    originalMessages: messages,
     consumeSseStream: consumeStream,
-    onFinish: async ({ isAborted, responseMessage }) => {
+    onFinish: ({ isAborted, responseMessage }) => {
       if (isAborted) {
+        console.warn("AI chat stream aborted", {
+          requestId,
+          sessionId,
+          elapsedMs: Date.now() - requestStartedAt,
+        });
+
         return;
       }
 
-      const content = extractTextFromUIMessage(responseMessage);
-
-      if (!content) {
-        return;
-      }
-
-      await addMessage({
+      console.info("AI chat stream finished", {
+        requestId,
         sessionId,
-        role: "assistant",
-        agent: "conversation",
-        content,
+        responseMessageId: responseMessage.id,
+        elapsedMs: Date.now() - requestStartedAt,
       });
+
+      after(async () => {
+        try {
+          const persistResult = await persistAssistantMessage(sessionId, responseMessage);
+
+          console.info("AI chat assistant message persisted", {
+            requestId,
+            sessionId,
+            persisted: persistResult.persisted,
+            contentLength: persistResult.contentLength,
+          });
+        } catch (error) {
+          console.error("AI chat assistant message persist failed", {
+            requestId,
+            sessionId,
+            error,
+          });
+        }
+      });
+    },
+    onError: (error) => {
+      console.error("AI chat stream failed", {
+        requestId,
+        error,
+        sessionId,
+        elapsedMs: Date.now() - requestStartedAt,
+      });
+
+      return "对话生成失败";
     },
   });
 }
