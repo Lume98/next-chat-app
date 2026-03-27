@@ -1,6 +1,7 @@
 import "server-only";
 
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { convertToModelMessages, customProvider, streamText, type UIMessage } from "ai";
+import { createOpenAI } from "@ai-sdk/openai";
 
 import type {
   MessageRecord,
@@ -9,7 +10,34 @@ import type {
   UploadRecord,
 } from "@/lib/domain/types";
 
-export const AI_GATEWAY_CONVERSATION_MODEL = "anthropic/claude-sonnet-4.6";
+const DEFAULT_ZHIPU_BASE_URL = "https://open.bigmodel.cn/api/paas/v4";
+const DEFAULT_ZHIPU_CHAT_MODEL = "glm-4.7";
+
+export const ZHIPU_CONVERSATION_MODEL_ALIAS = "conversation";
+
+function getConversationModel() {
+  const apiKey = process.env.ZHIPU_API_KEY?.trim();
+
+  if (!apiKey) {
+    throw new Error("缺少 ZHIPU_API_KEY，无法调用智谱对话模型");
+  }
+
+  const provider = createOpenAI({
+    name: "zhipu",
+    apiKey,
+    baseURL: process.env.ZHIPU_BASE_URL?.trim() || DEFAULT_ZHIPU_BASE_URL,
+  });
+
+  const modelId = process.env.ZHIPU_CHAT_MODEL?.trim() || DEFAULT_ZHIPU_CHAT_MODEL;
+
+  const models = customProvider({
+    languageModels: {
+      [ZHIPU_CONVERSATION_MODEL_ALIAS]: provider.chat(modelId),
+    },
+  });
+
+  return models.languageModel(ZHIPU_CONVERSATION_MODEL_ALIAS);
+}
 
 function summarizeWorkspace(uploads: UploadRecord[], reports: ReportArtifact[]) {
   const uploadSummary = uploads.length
@@ -71,7 +99,7 @@ export async function createConversationStream(input: {
   const modelMessages = await convertToModelMessages(input.messages);
 
   return streamText({
-    model: AI_GATEWAY_CONVERSATION_MODEL,
+    model: getConversationModel(),
     abortSignal: input.abortSignal,
     system: [
       "你是一个 AI 多 Agent 应用中的对话 Agent。",

@@ -34,7 +34,7 @@ export default async function ChatPage() {
 
   return (
     <main className="flex h-full min-h-0 w-full flex-1 overflow-hidden bg-[radial-gradient(circle_at_top,rgba(var(--primary-rgb),0.12),transparent_30%),linear-gradient(180deg,transparent,rgba(15,23,42,0.03))]">
-      <div className="h-full min-h-0 w-full px-4 py-4 sm:px-6 sm:py-6 lg:px-8 lg:py-8">
+      <div className="h-full min-h-0 w-full">
         <ChatEntry
           sessions={recentSessions}
           totalSessions={totalSessions}

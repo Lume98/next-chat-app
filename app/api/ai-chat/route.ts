@@ -71,11 +71,22 @@ export async function POST(request: Request) {
 
   await renameSessionIfUntitled(sessionId, latestUserMessage.content);
 
-  const result = await createConversationStream({
-    bundle,
-    messages: payload.messages,
-    abortSignal: request.signal,
-  });
+  let result;
+
+  try {
+    result = await createConversationStream({
+      bundle,
+      messages: payload.messages,
+      abortSignal: request.signal,
+    });
+  } catch (error) {
+    return Response.json(
+      {
+        error: error instanceof Error ? error.message : "对话模型初始化失败",
+      },
+      { status: 500 },
+    );
+  }
 
   return result.toUIMessageStreamResponse({
     originalMessages: payload.messages,
