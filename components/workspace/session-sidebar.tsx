@@ -45,8 +45,8 @@ export function SessionSidebar({
             Workspace
           </Badge>
           <div className="space-y-2">
-            <h1 className="text-lg font-semibold tracking-tight">{currentSession.title}</h1>
-            <p className="text-sm leading-6 text-muted-foreground">
+            <h1 className="text-xl font-semibold tracking-tight">{currentSession.title}</h1>
+            <p className="text-sm leading-7 text-muted-foreground">
               当前会话会共享消息、上传文件与报表结果，刷新后继续保留。
             </p>
           </div>
@@ -57,7 +57,7 @@ export function SessionSidebar({
               <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 最近活跃
               </p>
-              <p className="mt-2 text-sm font-medium">{getAgentLabel(currentSession.lastActiveAgent)}</p>
+              <p className="mt-2 text-base font-medium">{getAgentLabel(currentSession.lastActiveAgent)}</p>
             </CardContent>
           </Card>
           <Card size="sm" className="bg-sidebar-accent/40">
@@ -65,7 +65,7 @@ export function SessionSidebar({
               <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 上传文件
               </p>
-              <p className="mt-2 text-sm font-medium">{uploads.length} 个</p>
+              <p className="mt-2 text-base font-medium">{uploads.length} 个</p>
             </CardContent>
           </Card>
           <Card size="sm" className="bg-sidebar-accent/40">
@@ -73,18 +73,21 @@ export function SessionSidebar({
               <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 报表状态
               </p>
-              <p className="mt-2 text-sm font-medium">
+              <p className="mt-2 text-base font-medium">
                 {currentSession.latestReportId ? "已有最新报表" : "尚未生成"}
               </p>
             </CardContent>
           </Card>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button asChild className="flex-1 justify-start">
+            <Link href="/chat">新建聊天</Link>
+          </Button>
           <Button asChild variant="outline" className="flex-1 justify-start bg-transparent">
             <Link href="/">返回首页</Link>
           </Button>
           <Card size="sm" className="min-w-0 flex-1">
-            <CardContent className="py-2 text-xs text-muted-foreground">
+            <CardContent className="py-2 text-sm text-muted-foreground">
               <p className="uppercase tracking-[0.2em]">最后更新</p>
               <p className="mt-1 truncate text-sidebar-foreground">
                 {formatTimestamp(currentSession.updatedAt)}
@@ -101,7 +104,7 @@ export function SessionSidebar({
           <h2 className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
             最近会话
           </h2>
-          <span className="text-xs text-muted-foreground">{sessions.length}</span>
+          <span className="text-sm text-muted-foreground">{sessions.length}</span>
         </div>
         <div className="space-y-2">
           {sessions.slice(0, 8).map((session) => (
@@ -127,12 +130,12 @@ export function SessionSidebar({
                     <div className="flex items-start justify-between gap-3">
                       <p className="truncate font-medium">{session.title}</p>
                       {session.id === currentSession.id ? (
-                        <span className="shrink-0 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                      <span className="shrink-0 text-xs uppercase tracking-[0.2em] text-muted-foreground">
                           当前
                         </span>
                       ) : null}
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                    <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                       <span>{formatTimestamp(session.updatedAt)}</span>
                       <span>·</span>
                       <span>{getAgentLabel(session.lastActiveAgent)}</span>
@@ -158,7 +161,7 @@ export function SessionSidebar({
           <h2 className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
             当前状态
           </h2>
-          <span className="text-xs text-muted-foreground">{reports.length} 份报表</span>
+          <span className="text-sm text-muted-foreground">{reports.length} 份报表</span>
         </div>
         <div className="space-y-2 text-sm">
           <Card size="sm">
@@ -189,7 +192,7 @@ export function SessionSidebar({
           <h2 className="text-xs uppercase tracking-[0.24em] text-muted-foreground">
             最近上传
           </h2>
-          <span className="text-xs text-muted-foreground">{uploads.length}</span>
+          <span className="text-sm text-muted-foreground">{uploads.length}</span>
         </div>
         <div className="space-y-2 text-sm">
           {uploads.length === 0 ? (
@@ -207,11 +210,11 @@ export function SessionSidebar({
                   <CardContent className="py-3">
                     <div className="flex items-center justify-between gap-3">
                       <p className="truncate font-medium">{upload.fileName}</p>
-                      <Badge variant="outline" className="text-[11px] uppercase tracking-[0.18em]">
+                      <Badge variant="outline" className="text-xs uppercase tracking-[0.18em]">
                         {upload.kind}
                       </Badge>
                     </div>
-                    <p className="mt-2 text-[11px] leading-5 text-muted-foreground">
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">
                       {upload.summary}
                     </p>
                   </CardContent>

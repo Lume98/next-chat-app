@@ -25,13 +25,13 @@ export function ReportPanel({
     <Card>
       <CardHeader className="flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
-          <CardTitle className="text-sm font-semibold">报表 Agent</CardTitle>
+          <CardTitle className="text-base font-semibold">报表 Agent</CardTitle>
           <CardDescription>
             基于当前上传文件生成结构化中文报告。
           </CardDescription>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">{reports.length} 份报表</span>
+          <span className="text-sm text-muted-foreground">{reports.length} 份报表</span>
           <Button onClick={onGenerate} disabled={!canGenerate || isGenerating}>
             {isGenerating ? "生成中…" : "生成报表"}
           </Button>
@@ -40,7 +40,7 @@ export function ReportPanel({
 
       <CardContent className="space-y-4">
         {!canGenerate ? (
-          <p className="text-xs leading-6 text-muted-foreground">
+          <p className="text-sm leading-7 text-muted-foreground">
             至少上传一个文件后才能生成报表。
           </p>
         ) : null}
@@ -68,14 +68,14 @@ export function ReportPanel({
                 <p className="text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                   最新报表
                 </p>
-                <h3 className="text-base font-semibold leading-7">{latestReport.title}</h3>
-                <p className="text-sm leading-7 text-muted-foreground">{latestReport.summary}</p>
+                <h3 className="text-lg font-semibold leading-8">{latestReport.title}</h3>
+                <p className="text-base leading-8 text-muted-foreground">{latestReport.summary}</p>
               </div>
               <div className="space-y-4">
                 {latestReport.sections.map((section) => (
                   <section key={section.id} className="space-y-2 border-l border-border pl-3">
-                    <h4 className="text-sm font-medium">{section.title}</h4>
-                    <div className="whitespace-pre-wrap text-sm leading-7 text-muted-foreground">
+                    <h4 className="text-base font-medium">{section.title}</h4>
+                    <div className="whitespace-pre-wrap text-base leading-8 text-muted-foreground">
                       {section.content}
                     </div>
                   </section>
@@ -100,8 +100,8 @@ export function ReportPanel({
               {reports.slice(1).map((report) => (
                 <Card key={report.id} size="sm">
                   <CardContent className="py-3">
-                    <p className="font-medium">{report.title}</p>
-                    <p className="mt-1 text-xs leading-6 text-muted-foreground">
+                    <p className="text-base font-medium">{report.title}</p>
+                    <p className="mt-1 text-sm leading-7 text-muted-foreground">
                       {report.summary}
                     </p>
                   </CardContent>

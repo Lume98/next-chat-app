@@ -43,13 +43,13 @@ export function UploadList({
     <Card>
       <CardHeader className="flex flex-wrap items-center justify-between gap-4">
         <div className="space-y-1">
-          <CardTitle className="text-sm font-semibold">上传文件</CardTitle>
+          <CardTitle className="text-base font-semibold">上传文件</CardTitle>
           <CardDescription>
             支持 CSV、Excel、TXT 与 Markdown，单文件限制 10MB。
           </CardDescription>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-xs text-muted-foreground">{uploads.length} 个文件</span>
+          <span className="text-sm text-muted-foreground">{uploads.length} 个文件</span>
           <Button asChild variant="outline" disabled={isUploading}>
             <label className="cursor-pointer">
               <input
@@ -82,22 +82,22 @@ export function UploadList({
                 <CardContent className="space-y-2">
                   <div className="flex flex-wrap items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{upload.fileName}</p>
+                      <p className="truncate text-base font-medium">{upload.fileName}</p>
                       <div className="mt-2 flex flex-wrap items-center gap-2">
-                        <Badge variant="outline" className="text-[11px] uppercase tracking-[0.18em]">
+                        <Badge variant="outline" className="text-xs uppercase tracking-[0.18em]">
                           {upload.kind}
                         </Badge>
-                        <span className="text-[11px] uppercase tracking-[0.18em] text-muted-foreground">
+                        <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground">
                           {formatSize(upload.size)}
                         </span>
                       </div>
                     </div>
                   </div>
-                  <p className="text-sm leading-6 text-muted-foreground">{upload.summary}</p>
+                  <p className="text-sm leading-7 text-muted-foreground">{upload.summary}</p>
                   {upload.schemaPreview.length > 0 ? (
                     <div className="flex flex-wrap gap-2">
                       {upload.schemaPreview.map((field) => (
-                        <Badge key={field} variant="outline" className="text-xs">
+                        <Badge key={field} variant="outline" className="text-sm">
                           {field}
                         </Badge>
                       ))}

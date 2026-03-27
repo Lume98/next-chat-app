@@ -63,10 +63,10 @@ export function MessageList({
                         Conversation Workspace
                     </Badge>
                     <div className="space-y-2">
-                        <h2 className="text-xl font-semibold tracking-tight">
+                        <h2 className="text-2xl font-semibold tracking-tight">
                             从一条消息开始当前会话
                         </h2>
-                        <p className="text-sm leading-7 text-muted-foreground">
+                        <p className="text-base leading-8 text-muted-foreground">
                             你可以先描述问题，再逐步上传文件。对话 Agent 会结合当前上下文继续追问、总结和分析。
                         </p>
                     </div>
@@ -104,7 +104,7 @@ export function MessageList({
                             message.role === "user" ? "items-end" : "items-start",
                         )}
                     >
-                        <div className="flex max-w-3xl items-center gap-2 px-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                        <div className="flex max-w-3xl items-center gap-2 px-1 text-xs uppercase tracking-[0.22em] text-muted-foreground">
                             <span>{getMessageLabel(message)}</span>
                             <span>·</span>
                             <span>{formatTimestamp(message.createdAt)}</span>
@@ -118,7 +118,7 @@ export function MessageList({
                             )}
                         >
                             <CardContent>
-                                <div className="whitespace-pre-wrap text-sm leading-7">
+                                <div className="whitespace-pre-wrap text-base leading-8">
                                     {message.content}
                                 </div>
                             </CardContent>
@@ -128,7 +128,7 @@ export function MessageList({
 
                 {isSending ? (
                     <article className="flex w-full flex-col items-start gap-2">
-                        <div className="flex items-center gap-2 px-1 text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+                        <div className="flex items-center gap-2 px-1 text-xs uppercase tracking-[0.22em] text-muted-foreground">
                             <span>对话 Agent</span>
                             <span>·</span>
                             <span>处理中</span>

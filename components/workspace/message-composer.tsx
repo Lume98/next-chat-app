@@ -56,10 +56,10 @@ export function MessageComposer({
             onChange={(event) => onChange(event.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="输入你的问题、分析目标或后续追问…"
-            className="min-h-32 text-sm leading-7"
+            className="min-h-32 text-base leading-8"
           />
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Enter 换行，Ctrl / Cmd + Enter 发送。
             </p>
             <Button type="submit" disabled={isSending || !value.trim()}>

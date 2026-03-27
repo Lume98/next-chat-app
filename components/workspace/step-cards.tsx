@@ -31,16 +31,16 @@ export function StepCards() {
         <Card key={step.index} size="sm" className="bg-background/90">
           <CardHeader className="gap-4 pb-1">
             <div className="flex items-center gap-3">
-              <span className="inline-flex min-w-10 items-center justify-center border border-border/80 bg-muted/30 px-2 py-1 text-[11px] font-medium tracking-[0.24em]">
+              <span className="inline-flex min-w-10 items-center justify-center border border-border/80 bg-muted/30 px-2 py-1 text-xs font-medium tracking-[0.24em]">
                 {step.index}
               </span>
-              <CardDescription className="text-[11px] uppercase tracking-[0.22em]">
+              <CardDescription className="text-xs uppercase tracking-[0.22em]">
                 Step
               </CardDescription>
             </div>
             <CardTitle className="tracking-tight">{step.title}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 pt-0 text-sm leading-6 text-muted-foreground">
+          <CardContent className="space-y-4 pt-0 text-sm leading-7 text-muted-foreground">
             <p>{step.description}</p>
             <div className="h-px bg-border/70" />
           </CardContent>
