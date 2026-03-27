@@ -26,7 +26,6 @@ import {
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ChatOverviewPanel } from "@/components/chat/chat-overview-panel";
 import { ChatSessionSidebar } from "@/components/chat/chat-session-sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { MessageRecord, SessionRecord } from "@/lib/domain/types";
@@ -92,6 +91,7 @@ export function ChatEntry({
     });
 
   const isSending = status === "submitted" || status === "streaming";
+  const statusLabel = isLoadingSession ? "加载会话" : isSending ? "生成中" : "就绪";
 
   function syncSession(nextSession: SessionRecord) {
     setActiveSession(nextSession);
@@ -229,7 +229,7 @@ export function ChatEntry({
   }
 
   return (
-    <div className="grid h-full min-h-0 w-full gap-4 lg:grid-cols-[320px_minmax(0,1fr)] xl:grid-cols-[360px_minmax(0,1fr)]">
+    <div className="grid h-full min-h-0 w-full gap-4 lg:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[320px_minmax(0,1fr)]">
       <div className="min-h-0 lg:h-full">
         <ChatSessionSidebar
           totalSessions={totalSessions}
@@ -246,19 +246,24 @@ export function ChatEntry({
 
       <section
         aria-labelledby="chat-workspace-title"
-        className="flex min-h-0 min-w-0 flex-col gap-4 lg:h-full"
+        className="flex min-h-0 min-w-0 flex-col lg:h-full"
       >
         <h2 id="chat-workspace-title" className="sr-only">
           聊天工作区
         </h2>
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-border/70 bg-background/80 shadow-sm backdrop-blur">
-          <div className="shrink-0 border-b border-border/60 p-3 sm:p-4">
-            <ChatOverviewPanel
-              statusLabel={
-                isLoadingSession ? "加载会话" : isSending ? "生成中" : "就绪"
-              }
-              activeSessionTitle={activeSession?.title ?? null}
-            />
+        <div className="flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl border border-border/70 bg-background/90 shadow-sm">
+          <div className="flex shrink-0 items-center justify-between gap-3 border-b border-border/60 px-4 py-3 sm:px-5">
+            <div className="min-w-0">
+              <p className="text-[11px] uppercase tracking-[0.24em] text-muted-foreground">
+                对话区域
+              </p>
+              <p className="truncate text-sm font-medium sm:text-base">
+                {activeSession?.title ?? "新对话"}
+              </p>
+            </div>
+            <div className="shrink-0 text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              {statusLabel}
+            </div>
           </div>
 
           <div className="flex min-h-0 flex-1 flex-col overflow-hidden">

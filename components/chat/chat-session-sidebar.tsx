@@ -1,7 +1,5 @@
 "use client";
 
-import Link from "next/link";
-
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -60,75 +58,27 @@ export function ChatSessionSidebar({
   onSelectSession: (session: SessionRecord) => void;
 }) {
   return (
-    <aside className="flex min-h-0 flex-col gap-4 lg:h-full">
-      <Card className="border-border/60 bg-sidebar text-sidebar-foreground shadow-sm">
-        <CardHeader>
-          <div className="flex flex-wrap items-center gap-2">
-            <Badge
-              variant="outline"
-              className="text-xs uppercase tracking-[0.24em]"
-            >
-              Chat
-            </Badge>
-            <Badge
-              variant="outline"
-              className="text-xs uppercase tracking-[0.24em]"
-            >
-              Streaming
-            </Badge>
-            {isLoadingSession ? (
-              <Badge
-                variant="outline"
-                className="text-xs uppercase tracking-[0.24em]"
-              >
-                Loading
-              </Badge>
-            ) : null}
-          </div>
-          <CardTitle className="text-base font-semibold">独立聊天页</CardTitle>
-          <CardDescription>
-            当前页面只负责流式对话。历史会话在这里直接切换，不再跳转到工作区页面。
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-3">
-          <Card size="sm" className="bg-sidebar-accent/60">
-            <CardContent className="py-3">
-              <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                总会话
-              </p>
-              <p className="mt-2 text-base font-medium">
-                {totalSessions === 0 ? "暂无" : `${totalSessions} 条`}
-              </p>
-            </CardContent>
-          </Card>
-          <Card size="sm" className="bg-sidebar-accent/60">
-            <CardContent className="py-3">
-              <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                当前会话
-              </p>
-              <p className="mt-2 line-clamp-2 text-base font-medium">
-                {activeSessionTitle ?? "新对话"}
-              </p>
-            </CardContent>
-          </Card>
-          <div className="flex flex-wrap gap-2">
-            <Button onClick={onStartNewChat} disabled={isLoadingSession}>
-              新建对话
-            </Button>
-            <Button asChild variant="outline">
-              <Link href="/">返回首页</Link>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
+    <aside className="flex min-h-0 flex-col lg:h-full">
       <Card className="border-border/60 shadow-sm lg:min-h-0 lg:flex-1">
         <CardHeader className="flex-row items-center justify-between gap-4">
           <div>
-            <CardTitle className="text-base font-semibold">最近会话</CardTitle>
-            <CardDescription>选择一个会话并继续流式聊天。</CardDescription>
+            <CardTitle className="text-base font-semibold">会话列表</CardTitle>
+            <CardDescription>
+              {activeSessionTitle ?? "新对话"}
+            </CardDescription>
           </div>
-          <Badge variant="outline">{sessions.length}</Badge>
+          <div className="flex items-center gap-2">
+            <Badge variant="outline">
+              {totalSessions === 0 ? "0" : totalSessions}
+            </Badge>
+            <Button
+              onClick={onStartNewChat}
+              disabled={isLoadingSession}
+              size="sm"
+            >
+              新建对话
+            </Button>
+          </div>
         </CardHeader>
         <CardContent className="flex flex-col gap-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
           {sessions.length === 0 ? (
